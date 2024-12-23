@@ -4,6 +4,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+!.yarn/unplugged
 
 # compiled output
 /dist
