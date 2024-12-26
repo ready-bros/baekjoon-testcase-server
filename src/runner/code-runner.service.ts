@@ -2,15 +2,22 @@ import { spawn } from 'child_process';
 import { Injectable } from '@nestjs/common';
 
 interface CodeRunnerResult {
-    output: string;
-    runtime: number;
+  output: string;
+  runtime: number;
 }
 
 @Injectable()
 export class CodeRunnerService {
-  async runCode(code: string, input: string, answer: string, timeLimitSecond: number): Promise<CodeRunnerResult> {
+  async runCode(
+    code: string,
+    input: string,
+    answer: string,
+    timeLimitSecond: number,
+  ): Promise<CodeRunnerResult> {
     return new Promise((resolve, reject) => {
-      const child = spawn('node', ['-e', code], { stdio: ['pipe', 'pipe', 'pipe'] });
+      const child = spawn('node', ['-e', code], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
       let output = '';
       let runtime = 0;
 

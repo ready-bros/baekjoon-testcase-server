@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {CodeRunnerModule} from "./runner/code-runner.module";
+import { CodeRunnerModule } from './runner/code-runner.module';
 
 @Module({
   imports: [CodeRunnerModule],
