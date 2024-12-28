@@ -36,7 +36,6 @@ export class CodeRunnerController {
     const result = await this.codeRunnerService.runCode(
       code,
       input,
-      answer,
       timeLimitSecond,
     );
 

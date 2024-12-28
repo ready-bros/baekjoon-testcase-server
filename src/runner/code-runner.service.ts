@@ -11,7 +11,6 @@ export class CodeRunnerService {
   async runCode(
     code: string,
     input: string,
-    answer: string,
     timeLimitSecond: number,
   ): Promise<CodeRunnerResult> {
     return new Promise((resolve, reject) => {
