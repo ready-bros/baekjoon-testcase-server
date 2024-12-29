@@ -28,12 +28,14 @@ export class CodeRunnerController {
   })
   @Post()
   async codeRun(
+    @Body('language') language: string,
     @Body('code') code: string,
     @Body('input') input: string,
     @Body('answer') answer: string,
     @Body('timeLimitSecond') timeLimitSecond: number,
   ): Promise<CodeRunResponse> {
     const result = await this.codeRunnerService.runCode(
+      language,
       code,
       input,
       timeLimitSecond,
