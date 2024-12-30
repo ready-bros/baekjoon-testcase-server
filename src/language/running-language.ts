@@ -1,4 +1,5 @@
 import { CodeRunnerResult } from '../util/constant';
+import { NotSupportedLanguageException } from '../exception/domain/timeout.exception';
 
 export interface RunningLanguageConstructor {
   new (runtime: number, code: string, input: string): RunningLanguage;
@@ -10,9 +11,9 @@ export abstract class RunningLanguage {
   abstract runCode(): Promise<CodeRunnerResult>;
   abstract calculateTimeLimit(runtime: number): number;
 
-  protected handleTimeout(reject: any) {
+  protected handleTimeout(reject: any, runtime: number) {
     setTimeout(() => {
-      reject(new Error('Timeout'));
+      reject(new NotSupportedLanguageException(Date.now() - runtime));
     }, this.runtimeLimit);
   }
 }

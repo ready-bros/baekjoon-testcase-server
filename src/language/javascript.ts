@@ -33,7 +33,7 @@ export class Javascript extends RunningLanguage {
     const runtime = Date.now();
 
     child.stdout.on('data', (data: string) => {
-      output += data.toString();
+      output += data;
     });
 
     child.on('close', () => {
@@ -41,7 +41,7 @@ export class Javascript extends RunningLanguage {
     });
 
     this.handleError(child);
-    this.handleTimeout(reject);
+    this.handleTimeout(reject, runtime);
 
     child.stdin.write(this.input + '\n');
     child.stdin.end();
