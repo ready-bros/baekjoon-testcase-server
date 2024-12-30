@@ -2,12 +2,13 @@ import { RunningLanguage } from './running-language';
 import { CodeRunnerResult } from '../util/constant';
 import { spawn, ChildProcess } from 'child_process';
 
-export class Javascript implements RunningLanguage {
+export class Javascript extends RunningLanguage {
   runtimeLimit: number;
   code: string;
   input: string;
 
   constructor(runtime: number, code: string, input: string) {
+    super();
     this.runtimeLimit = this.calculateTimeLimit(runtime);
     this.code = code;
     this.input = input;
@@ -50,12 +51,6 @@ export class Javascript implements RunningLanguage {
     child.stderr.on('data', (data: string) => {
       console.error(`stderr: ${data}`);
     });
-  }
-
-  handleTimeout(reject: any) {
-    setTimeout(() => {
-      reject(new Error('Timeout'));
-    }, this.runtimeLimit);
   }
 
   calculateTimeLimit(runtime: number): number {
