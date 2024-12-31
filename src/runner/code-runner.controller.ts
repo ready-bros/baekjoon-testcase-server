@@ -1,7 +1,8 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { CodeRunnerService } from './code-runner.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CodeRunResultDto } from './code-run-result.dto';
+import { CodeRunRequestDto } from './code-run-request.dto';
 
 interface CodeRunResponse {
   id: number;
@@ -16,32 +17,14 @@ export class CodeRunnerController {
   @ApiOperation({ summary: '코드 실행 api' })
   @ApiResponse({
     status: 200,
-    description: '성공',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'number', example: 1 },
-        result: { type: 'boolean', example: true },
-        runtime: { type: 'number', example: 23 },
-      },
-    },
+    type: CodeRunResultDto,
   })
   @Post()
-  async codeRun(
-    @Body('language') language: string,
-    @Body('code') code: string,
-    @Body('input') input: string,
-    @Body('answer') answer: string,
-    @Body('timeLimitSecond') timeLimitSecond: number,
-  ): Promise<CodeRunResponse> {
-    const result = await this.codeRunnerService.runCode(
-      language,
-      code,
-      input,
-      timeLimitSecond,
-    );
+  @ApiBody({ type: CodeRunRequestDto })
+  async codeRun(@Body() request: CodeRunRequestDto): Promise<CodeRunResponse> {
+    const result = await this.codeRunnerService.runCode(request);
 
-    if (result.output === answer + '\n') {
+    if (result.output === request.answer + '\n') {
       return new CodeRunResultDto(1, true, result.runtime);
     }
 
