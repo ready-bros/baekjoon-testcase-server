@@ -12,6 +12,11 @@ async function bootstrap() {
     .addServer('http://localhost:3000/api', 'Local environment')
     .build();
   const document = SwaggerModule.createDocument(app, options);
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  });
   SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
