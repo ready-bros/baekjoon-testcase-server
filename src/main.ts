@@ -19,6 +19,12 @@ async function bootstrap() {
   });
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableShutdownHooks();
+
+  await app.listen(process.env.PORT ?? 3000).then(() => {
+    process.on('SIGTERM', async () => {
+      await app.close();
+    });
+  });
 }
 bootstrap();
