@@ -23,11 +23,11 @@ export class CodeRunnerController {
   @ApiBody({ type: CodeRunRequestDto })
   async codeRun(@Body() request: CodeRunRequestDto): Promise<CodeRunResponse> {
     const result = await this.codeRunnerService.runCode(request);
+    const isCorrect = this.codeRunnerService.answerCheck(
+      result.output,
+      request.answer,
+    );
 
-    if (result.output === request.answer + '\n') {
-      return new CodeRunResultDto(1, true, result.runtime);
-    }
-
-    return new CodeRunResultDto(1, false, result.runtime);
+    return new CodeRunResultDto(1, isCorrect, result.runtime);
   }
 }

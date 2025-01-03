@@ -17,4 +17,8 @@ export class CodeRunnerService {
     const instance = new LanguageClass(timeLimitSecond, code, input);
     return instance.runCode();
   }
+
+  answerCheck(answer: string, output: string): boolean {
+    return answer === output;
+  }
 }
