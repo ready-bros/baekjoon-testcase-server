@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { CodeRunnerService } from './code-runner.service';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CodeRunResultDto } from './code-run-result.dto';
 import { CodeRunRequestDto } from './code-run-request.dto';
 
