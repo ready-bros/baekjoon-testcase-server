@@ -19,6 +19,6 @@ export class CodeRunnerService {
   }
 
   answerCheck(answer: string, output: string): boolean {
-    return answer === output;
+    return answer.trim() === output.trim();
   }
 }
