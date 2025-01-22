@@ -23,7 +23,7 @@ export class Javascript extends RunningLanguage {
   }
 
   createChildProcess() {
-    return spawn('node', ['-e', this.code], {
+    return spawn('node', ['--stack-size=65536', '-e', this.code], {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
   }
