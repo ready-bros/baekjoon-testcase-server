@@ -1,3 +1,5 @@
+application.*
+
 HELP.md
 .gradle
 build/
