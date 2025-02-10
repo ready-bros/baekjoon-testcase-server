@@ -26,7 +26,6 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
         }
 
         if (!codeRunningResult.getOutput().equals(testCodeRequest.getAnswer())) {
-            System.out.println(codeRunningResult.getOutput() + " :: " + testCodeRequest.getAnswer());
             return new TestCodeResponse(1L, codeRunningResult.getRuntime(), Correct.WRONG_ANSWER.getSuccess(), Correct.WRONG_ANSWER.getReason());
         }
 
