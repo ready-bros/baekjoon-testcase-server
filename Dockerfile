@@ -3,7 +3,7 @@ FROM openjdk:17-alpine AS builder
 WORKDIR /app
 
 COPY . .
-RUN ./gradlew clean build
+RUN chmod +x gradlew && ./gradlew clean build
 
 FROM openjdk:17-alpine
 
