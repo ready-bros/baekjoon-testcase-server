@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class NodeRunner implements Runner {
     @Override
-    public CodeRunningResult run(long id, String input, String code) {
+    public CodeRunningResult run(long id, String input, String extension) {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("node",
                     "--stack-size=65536",
-                    "-e",
-                    code);
+                    "code/" + id + extension);
 
+            // 출력 및 에러 파이프라인 통합
             processBuilder.redirectErrorStream(true);
             long startTime = System.currentTimeMillis();
             Process process = processBuilder.start();
