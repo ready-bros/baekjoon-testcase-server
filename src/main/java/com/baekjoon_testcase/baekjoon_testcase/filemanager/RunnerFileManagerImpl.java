@@ -9,17 +9,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class RunnerFileManagerImpl implements RunnerFileManager {
     @Value("${folder.name.code}")
-    protected String CODE_FOLDER_NAME;
+    private String CODE_FOLDER_NAME;
     @Value("${folder.name.output}")
-    protected String OUTPUT_FOLDER_NAME;
+    private String OUTPUT_FOLDER_NAME;
+    @Value("${file.name}")
+    private String FILE_NAME;
 
     @Override
     public void saveCode(long id, String code, String extension) {
         try {
-            if (!Files.exists(Path.of(this.CODE_FOLDER_NAME))) {
-                Files.createDirectory(Path.of(this.CODE_FOLDER_NAME));
-            }
-            Files.writeString(Path.of(this.CODE_FOLDER_NAME + "/" + id + extension), code);
+            validateCodeDirectory();
+
+            String codeDirectory = this.CODE_FOLDER_NAME + "/" + id;
+
+            Files.createDirectory(Path.of(codeDirectory));
+            Files.writeString(Path.of(codeDirectory, this.FILE_NAME + extension), code);
         } catch (IOException e) {
             throw new RuntimeException("임시 코드 저장 예외", e);
         }
@@ -34,6 +38,14 @@ public class RunnerFileManagerImpl implements RunnerFileManager {
             Files.writeString(Path.of(this.OUTPUT_FOLDER_NAME + "/" + id + ".txt"), output);
         } catch (IOException e) {
             throw new RuntimeException("출력 결과 저장 예외", e);
+        }
+    }
+
+    private void validateCodeDirectory() throws IOException {
+        Path codeDirectoryPath = Path.of(this.CODE_FOLDER_NAME);
+
+        if (!Files.exists(codeDirectoryPath)) {
+            Files.createDirectory(codeDirectoryPath);
         }
     }
 }

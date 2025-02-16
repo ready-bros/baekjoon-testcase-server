@@ -5,16 +5,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class NodeRunner implements Runner {
+    @Value("${file.name}")
+    private String FILE_NAME;
+
     @Override
     public CodeRunningResult run(long id, String input, String extension) {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("node",
                     "--stack-size=65536",
-                    "code/" + id + extension);
+                    "code/" + id + "/" + this.FILE_NAME + extension);
 
             // 출력 및 에러 파이프라인 통합
             processBuilder.redirectErrorStream(true);
