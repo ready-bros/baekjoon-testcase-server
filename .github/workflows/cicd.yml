@@ -32,6 +32,7 @@ jobs:
 
       - name: application.yml 생성
         run: |
+          mkdir -p src/main/resources
           touch src/main/resources/application.yml
           echo "${{ secrets.ENV }}" > src/main/resources/application.yml
 
