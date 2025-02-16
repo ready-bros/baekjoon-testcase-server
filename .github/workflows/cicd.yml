@@ -31,7 +31,9 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: application.yml 생성
-        run: echo "${{ secrets.ENV }}" > src/main/resources/application.yml
+        run: |
+          touch src/main/resources/application.yml
+          echo "${{ secrets.ENV }}" > src/main/resources/application.yml
 
       # 서버 이미지 빌드 및 태그 지정
       - name: Build and tag Docker image
