@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum Language {
-    NODE("node", ".js")
+    NODE("node", ".js"),
+    JAVA("java", ".java")
     ;
 
     private String name;
