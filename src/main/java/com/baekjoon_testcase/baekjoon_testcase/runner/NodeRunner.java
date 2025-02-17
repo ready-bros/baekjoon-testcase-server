@@ -22,14 +22,7 @@ public class NodeRunner implements Runner {
 
             // 출력 및 에러 파이프라인 통합
             processBuilder.redirectErrorStream(true);
-            long startTime = System.currentTimeMillis();
             Process process = processBuilder.start();
-
-            // 입력 처리
-            try (OutputStream os = process.getOutputStream()) {
-                os.write((input + "\n").getBytes());
-                os.flush();
-            }
 
             // 에러 캡처
             BufferedReader errorReader = new BufferedReader(
@@ -48,6 +41,14 @@ public class NodeRunner implements Runner {
                 while ((line = reader.readLine()) != null) {
                     output.append(line).append("\n");
                 }
+            }
+
+            long startTime = System.currentTimeMillis();
+
+            // 입력 처리
+            try (OutputStream os = process.getOutputStream()) {
+                os.write((input + "\n").getBytes());
+                os.flush();
             }
 
             process.waitFor();

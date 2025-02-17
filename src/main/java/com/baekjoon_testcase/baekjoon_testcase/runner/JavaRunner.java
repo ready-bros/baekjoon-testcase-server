@@ -34,14 +34,7 @@ public class JavaRunner implements Runner {
                     this.FILE_NAME);
 
             processBuilder.redirectErrorStream(true);
-            long startTime = System.currentTimeMillis();
             Process process = processBuilder.start();
-
-            // 입력 처리
-            try (OutputStream os = process.getOutputStream()) {
-                os.write((input + "\n").getBytes());
-                os.flush();
-            }
 
             // 에러 캡처
             BufferedReader errorReader = new BufferedReader(
@@ -62,7 +55,15 @@ public class JavaRunner implements Runner {
                 }
             }
 
-            System.out.println(process.waitFor());
+            long startTime = System.currentTimeMillis();
+
+            // 입력 처리
+            try (OutputStream os = process.getOutputStream()) {
+                os.write((input + "\n").getBytes());
+                os.flush();
+            }
+
+            process.waitFor();
             int totalRuntime = (int) (System.currentTimeMillis() - startTime);
 
             return new CodeRunningResult(totalRuntime, output.toString());
