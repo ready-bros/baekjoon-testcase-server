@@ -1,10 +1,8 @@
 package com.baekjoon_testcase.baekjoon_testcase.runner;
 
 import com.baekjoon_testcase.baekjoon_testcase.dto.CodeRunningResult;
-import java.io.BufferedReader;
+import com.baekjoon_testcase.baekjoon_testcase.stream.StreamManager;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,45 +14,15 @@ public class NodeRunner implements Runner {
     @Override
     public CodeRunningResult run(long id, String input, String extension) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("node",
-                    "--stack-size=65536",
-                    "code/" + id + "/" + this.FILE_NAME + extension);
+            Process process = startProcess(id, extension);
+            StreamManager  streamManager = new StreamManager(process);
 
-            // 출력 및 에러 파이프라인 통합
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
+            int totalRuntime = sendInput(streamManager, process, input);
 
-            // 에러 캡처
-            BufferedReader errorReader = new BufferedReader(
-                    new InputStreamReader(process.getErrorStream()));
-            String errorLine;
-            while ((errorLine = errorReader.readLine()) != null) {
-                System.err.println("Error: " + errorLine);
-            }
+            System.err.println(streamManager.getError());
+            String output = streamManager.getOutput();
 
-            // 출력 캡처
-            StringBuilder output = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()))) {
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
-                }
-            }
-
-            long startTime = System.currentTimeMillis();
-
-            // 입력 처리
-            try (OutputStream os = process.getOutputStream()) {
-                os.write((input + "\n").getBytes());
-                os.flush();
-            }
-
-            process.waitFor();
-            int totalRuntime = (int) (System.currentTimeMillis() - startTime);
-
-            return new CodeRunningResult(totalRuntime, output.toString());
+            return new CodeRunningResult(totalRuntime, output);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("임시 코드 실행 예외", e);
         }
@@ -63,5 +31,23 @@ public class NodeRunner implements Runner {
     @Override
     public int getRuntimeLimit(int runtime) {
         return runtime * 3 + 2;
+    }
+
+    private Process startProcess(long id, String extension) throws IOException{
+        ProcessBuilder processBuilder = new ProcessBuilder("node",
+                "--stack-size=65536",
+                "code/" + id + "/" + this.FILE_NAME + extension);
+
+        processBuilder.redirectErrorStream(true);
+        return processBuilder.start();
+    }
+
+    private int sendInput(StreamManager streamManager, Process process, String input) throws IOException, InterruptedException {
+        long startTime = System.currentTimeMillis();
+
+        streamManager.sendInput(input); // 파라미터 입력
+        process.waitFor(); // 코드 종료 대기
+
+        return (int) (System.currentTimeMillis() - startTime);
     }
 }
