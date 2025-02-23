@@ -29,7 +29,7 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
 
         validateInputAndAnswer(inputList, answerList);
 
-        return RunEachTestCase(runner, language, inputList, answerList, testCodeRequest.getTimeLimitSecond());
+        return runAllTestcases(runner, language, inputList, answerList, testCodeRequest.getTimeLimitSecond());
     }
 
     private void validateInputAndAnswer(List<String> inputList, List<String> answerList) {
@@ -42,7 +42,7 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
         }
     }
 
-    private TestCodeResponse RunEachTestCase(Runner runner, Language language, List<String> inputList, List<String> answerList, int timeLimit) {
+    private TestCodeResponse runAllTestcases(Runner runner, Language language, List<String> inputList, List<String> answerList, int timeLimit) {
         int totalTestRuntime = 0;
 
         for (int runningIndex = 0; runningIndex < inputList.size(); runningIndex++) {
@@ -57,8 +57,6 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
             }
         }
 
-        int runtimeAverage = totalTestRuntime / inputList.size();
-
-        return new TestCodeResponse(1L, runtimeAverage, Correct.CORRECT.getSuccess(), Correct.CORRECT.getReason());
+        return new TestCodeResponse(1L, totalTestRuntime / inputList.size(), Correct.CORRECT.getSuccess(), Correct.CORRECT.getReason());
     }
 }
