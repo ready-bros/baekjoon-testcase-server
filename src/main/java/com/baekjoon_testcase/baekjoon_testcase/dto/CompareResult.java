@@ -1,11 +1,8 @@
 package com.baekjoon_testcase.baekjoon_testcase.dto;
 
-import lombok.AllArgsConstructor;
+import com.baekjoon_testcase.baekjoon_testcase.common.Correct;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class CompareResult {
     @Getter
     int runtime;
@@ -13,7 +10,20 @@ public class CompareResult {
     @Getter
     String reason;
 
+    public CompareResult(int runtime) {
+        this.runtime = runtime;
+    }
+
     public boolean isSuccess() {
         return success;
+    }
+
+    public void setCorrect(Correct correct) {
+        if (this.reason != null) {
+            return;
+        }
+
+        this.success = correct.getSuccess();
+        this.reason = correct.getReason();
     }
 }
