@@ -26,9 +26,7 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
         List<String> inputList = testCodeRequest.getInput();
         List<String> answerList = testCodeRequest.getAnswer();
 
-        if (inputList.size() != answerList.size()) {
-            throw new IllegalArgumentException("input과 answer의 개수가 다릅니다.");
-        }
+        validateInputAndAnswer(inputList, answerList);
 
         return RunEachTestCase(runner, language, inputList, answerList, testCodeRequest.getTimeLimitSecond());
     }
@@ -43,6 +41,16 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
         }
 
         return new CompareResult(runtime, Correct.CORRECT.getSuccess(), Correct.CORRECT.getReason());
+    }
+
+    private void validateInputAndAnswer(List<String> inputList, List<String> answerList) {
+        if (inputList.isEmpty()) {
+            throw new IllegalArgumentException("input이 비어있습니다.");
+        }
+
+        if (inputList.size() != answerList.size()) {
+            throw new IllegalArgumentException("input과 answer의 개수가 다릅니다.");
+        }
     }
 
     private TestCodeResponse RunEachTestCase(Runner runner, Language language, List<String> inputList, List<String> answerList, int timeLimit) {
