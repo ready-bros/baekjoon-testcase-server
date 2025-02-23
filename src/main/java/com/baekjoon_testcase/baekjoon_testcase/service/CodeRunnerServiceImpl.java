@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class CodeRunnerServiceImpl implements CodeRunnerService{
     private final Map<Language, Runner> runnerMap;
     private final RunnerFileManager runnerFileManager;
+    private final AnswerComparator answerComparator;
 
     public TestCodeResponse runCode(TestCodeRequest testCodeRequest) {
         Runner runner = runnerMap.get(testCodeRequest.getLanguage());
@@ -29,18 +30,6 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
         validateInputAndAnswer(inputList, answerList);
 
         return RunEachTestCase(runner, language, inputList, answerList, testCodeRequest.getTimeLimitSecond());
-    }
-
-    private CompareResult compareAnswer(int runtime, int runtimeLimit, String output, String answer) {
-        if (runtime >= runtimeLimit) {
-            return new CompareResult(runtime, Correct.TIME_LIMIT_EXCEEDED.getSuccess(), Correct.TIME_LIMIT_EXCEEDED.getReason());
-        }
-
-        if (!output.equals(answer)) {
-            return new CompareResult(runtime, Correct.WRONG_ANSWER.getSuccess(), Correct.WRONG_ANSWER.getReason());
-        }
-
-        return new CompareResult(runtime, Correct.CORRECT.getSuccess(), Correct.CORRECT.getReason());
     }
 
     private void validateInputAndAnswer(List<String> inputList, List<String> answerList) {
@@ -58,11 +47,9 @@ public class CodeRunnerServiceImpl implements CodeRunnerService{
 
         for (int runningIndex = 0; runningIndex < inputList.size(); runningIndex++) {
             CodeRunningResult codeRunningResult = runner.run(1L, inputList.get(runningIndex), language.getFileExtension());
-            int runtime = codeRunningResult.getRuntime();
             int runtimeLimit = runner.getRuntimeLimit(timeLimit);
-            String output = codeRunningResult.getOutput();
 
-            CompareResult compareResult = compareAnswer(runtime, runtimeLimit, output, answerList.get(runningIndex));
+            CompareResult compareResult = this.answerComparator.compare(codeRunningResult, runtimeLimit, answerList.get(runningIndex));
             totalTestRuntime += compareResult.getRuntime();
 
             if (!compareResult.isSuccess()) {
